@@ -1,0 +1,38 @@
+ // 登录
+    wx.login({
+      success: res => {
+        console.log(res);
+
+wx.request({
+          method: "GET",
+          url: 'http://localhost:3000/wx/onLogin',
+          data: {
+            "code": res.code,
+            'session': that.globalData.session
+          },
+          header: {
+            'content-type': 'application/json'
+          },
+          success: function (res) {
+            if (res.statusCode === 200) {
+              console.log(res.data);
+              //              console.log("openid: " + res.data.result);
+              if (res.data.success) {
+                that.globalData.uid = res.data.userid;
+                //console.log(res.data.session_3rd);
+                if (res.data.msg !== 'available') {
+                  that.globalData.session = res.data.session_3rd;
+                  try {
+                    wx.setStorageSync('session', res.data.session_3rd);
+
+                  } catch (e) {
+                  }
+                }
+              }
+              console.log(that.globalData);
+              //              console.log("session_key: " + res.data.session_key);
+            }
+            // success
+          },
+          fail: function (res) {
+		  ...........
